@@ -12,7 +12,11 @@ public class CatchBall : MonoBehaviour {
         {
             if (other.GetComponent<Rigidbody>().velocity.magnitude >= BallVelocity)
             {
-
+                ShooterPlayer splayer = player.GetComponent<ShooterPlayer>();
+                if (null != splayer)
+                {
+                    splayer.AddCatchCount();
+                }
             }
 
             Destroy(other.gameObject);

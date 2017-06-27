@@ -34,11 +34,14 @@ public class DefenderPlayer : Player
     {
         if (null != gamepad)
         {
-            MoveAndRotate();
+            if (GameStateManager.GetCurrentState().Equals(PlayingState.Instance))
+            {
+                MoveAndRotate();
 
-            Shoot();
+                Shoot();
 
-            Rush();
+                Rush();
+            }           
         }
     }
 

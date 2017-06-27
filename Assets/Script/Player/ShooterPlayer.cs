@@ -6,7 +6,10 @@ public class ShooterPlayer : Player {
     public float RotateSpeed = 5f;
     public float MoveSpeed = 10f;
 
-    public float ShootSpeed = 20f;
+    public float ShootSpeed = 70f;
+
+    public float SkillSpeed = 80f;
+    public GameObject SkillBallPrefab;
 
     public Transform ShootPoint;
     public GameObject BallPrefab;
@@ -46,6 +49,7 @@ public class ShooterPlayer : Player {
                 SkillState state = GameStateManager.GetCurrentState() as SkillState;
                 if (gameObject.Equals(state.player.gameObject))
                 {
+                    Rotate();
                     ShootSkill();
                 }
             }
@@ -54,17 +58,41 @@ public class ShooterPlayer : Player {
 
     public void AddCatchCount()
     {
-        currentCatchCount++;
+        if (currentCatchCount < RequiredCatchCount)
+            currentCatchCount++;
     }
 
     void ShootSkill()
     {
-        Debug.Log("Use Skill");
+        if (gamepad.GetButtonADown())
+        {
+            anim.SetTrigger("Skill");
+            GameObject ball = Instantiate(BallPrefab, ShootPoint.position, Quaternion.identity) as GameObject;
+            ball.GetComponent<Rigidbody>().velocity = -transform.forward * ShootSpeed;
+            isHaveBall = false;
+            GameStateManager.SetCurrentState(PlayingState.Instance);
+        }
+    }
+
+    void Rotate()
+    {
+        float Horizontal = gamepad.GetLSHorizontal();
+        float Vertical = gamepad.GetLSVertical();
+
+        Vector3 movement = new Vector3(Horizontal, 0, Vertical);
+        movement = movement.normalized;
+
+        if (movement.magnitude > 0)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation,
+                Quaternion.LookRotation(movement), RotateSpeed * Time.deltaTime);
+        }
     }
 
     void UseSkill()
     {
-        if (gamepad.GetButtonXDown())
+        if (gamepad.GetButtonBDown() && currentCatchCount == RequiredCatchCount
+            && isHaveBall)
         {
             SkillState state = SkillState.Instance;
             state.player = this;

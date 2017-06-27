@@ -39,9 +39,12 @@ public class RunnerPlayer : Player {
 	void FixedUpdate() {
         if (null != gamepad)
         {
-            MoveAndRotate();
+            if (GameStateManager.GetCurrentState().Equals(PlayingState.Instance))
+            {
+                MoveAndRotate();
 
-            DisplayPoints();
+                DisplayPoints();
+            }                
         }       
     }
 
