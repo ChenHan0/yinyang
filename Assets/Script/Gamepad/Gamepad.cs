@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class Gamepad {
+    public bool isUse = false;
+
     public virtual float GetLSHorizontal()
     {
         return 0.0f;

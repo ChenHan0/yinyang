@@ -12,7 +12,7 @@ public class RunnerPlayer : Player {
 
     private int turns = 0;
 
-    private Gamepad gamepad;
+    public Gamepad gamepad;
 
     [HideInInspector]
     public bool[] points;
@@ -36,12 +36,8 @@ public class RunnerPlayer : Player {
     }
 	
 	// Update is called once per frame
-	void Update () {
-        if (null == gamepad)
-        {
-            gamepad = GamepadManager.GetCurrentPad();
-        }
-        else
+	void FixedUpdate() {
+        if (null != gamepad)
         {
             MoveAndRotate();
 

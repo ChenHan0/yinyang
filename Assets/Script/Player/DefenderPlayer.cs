@@ -20,7 +20,7 @@ public class DefenderPlayer : Player
 
     private bool isHaveBall = false;
     
-    private Gamepad gamepad;
+    public Gamepad gamepad;
 
     // Use this for initialization
     void Start () {
@@ -30,13 +30,9 @@ public class DefenderPlayer : Player
     }
 	
 	// Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        if (null == gamepad)
-        {
-            gamepad = GamepadManager.GetCurrentPad();
-        }
-        else
+        if (null != gamepad)
         {
             MoveAndRotate();
 

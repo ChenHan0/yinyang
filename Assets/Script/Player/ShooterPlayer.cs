@@ -15,25 +15,61 @@ public class ShooterPlayer : Player {
 
     private bool isHaveBall = false;
 
-    private Gamepad gamepad;
+    public Gamepad gamepad;
 
-	// Use this for initialization
-	void Start () {
+    private Animator anim;
+
+    public int RequiredCatchCount = 3;
+    private int currentCatchCount = 0;
+
+    // Use this for initialization
+    void Start () {
         rigibody = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
+        GameStateManager.SetCurrentState(PlayingState.Instance);
 	}
 	
 	// Update is called once per frame
-	void Update () {
-        if (null == gamepad)
+	void FixedUpdate() {
+        if (null != gamepad)
         {
-            gamepad = GamepadManager.GetCurrentPad();
-        }
-        else
-        {
-            MoveAndRotate();
+            if (GameStateManager.GetCurrentState().Equals(PlayingState.Instance))
+            {
+                MoveAndRotate();
 
-            Shoot();
-        }        
+                Shoot();
+
+                UseSkill();
+            }
+            else if (GameStateManager.GetCurrentState().Equals(SkillState.Instance))
+            {
+                SkillState state = GameStateManager.GetCurrentState() as SkillState;
+                if (gameObject.Equals(state.player.gameObject))
+                {
+                    ShootSkill();
+                }
+            }
+        }      
+    }
+
+    public void AddCatchCount()
+    {
+        currentCatchCount++;
+    }
+
+    void ShootSkill()
+    {
+        Debug.Log("Use Skill");
+    }
+
+    void UseSkill()
+    {
+        if (gamepad.GetButtonXDown())
+        {
+            SkillState state = SkillState.Instance;
+            state.player = this;
+            GameStateManager.ChangeState(state);
+        }
     }
 
     void Shoot()
@@ -42,8 +78,9 @@ public class ShooterPlayer : Player {
         {
             if (isHaveBall)
             {
+                anim.SetTrigger("Skill");
                 GameObject ball = Instantiate(BallPrefab, ShootPoint.position, Quaternion.identity) as GameObject;
-                ball.GetComponent<Rigidbody>().velocity = transform.forward * ShootSpeed;
+                ball.GetComponent<Rigidbody>().velocity = -transform.forward * ShootSpeed;
                 isHaveBall = !isHaveBall;
             }
         }
@@ -64,8 +101,16 @@ public class ShooterPlayer : Player {
         movement = movement.normalized;
 
         if (movement.magnitude > 0)
+        {
             transform.rotation = Quaternion.Slerp(transform.rotation,
-                Quaternion.LookRotation(-movement), RotateSpeed * Time.deltaTime);
+                Quaternion.LookRotation(movement), RotateSpeed * Time.deltaTime);
+            anim.SetBool("IsMove", true);
+        }
+        else
+        {
+            anim.SetBool("IsMove", false);
+        }
+            
 
         rigibody.MovePosition(transform.position - movement * MoveSpeed * Time.deltaTime);
     }
