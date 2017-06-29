@@ -138,9 +138,10 @@ public class ShooterPlayer : Player {
         {
             anim.SetBool("IsMove", false);
         }
-            
 
-        rigibody.MovePosition(transform.position - movement * MoveSpeed * Time.deltaTime);
+
+        //rigibody.MovePosition(transform.position - movement * MoveSpeed * Time.deltaTime);
+        rigibody.velocity = -movement * MoveSpeed;
     }
 
 }

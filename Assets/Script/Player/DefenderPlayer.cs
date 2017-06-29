@@ -73,7 +73,7 @@ public class DefenderPlayer : Player
             if (isHaveBall)
             {
                 GameObject ball = Instantiate(BallPrefab, ShootPoint.position, Quaternion.identity) as GameObject;
-                ball.GetComponent<Rigidbody>().velocity = transform.forward * ShootSpeed;
+                ball.GetComponent<Rigidbody>().velocity = -transform.forward * ShootSpeed;
                 isHaveBall = !isHaveBall;
             }
         }
@@ -95,8 +95,9 @@ public class DefenderPlayer : Player
 
         if (movement.magnitude > 0)
             transform.rotation = Quaternion.Slerp(transform.rotation,
-                Quaternion.LookRotation(-movement), RotateSpeed * Time.deltaTime);
+                Quaternion.LookRotation(movement), RotateSpeed * Time.deltaTime);
 
-        rigibody.MovePosition(transform.position - movement * CurrentSpeed * Time.deltaTime);
+        //rigibody.MovePosition(transform.position - movement * CurrentSpeed * Time.deltaTime);
+        rigibody.velocity = -movement * CurrentSpeed;
     }
 }

@@ -5,6 +5,7 @@ public class CreatePlayer : MonoBehaviour {
     public GameObject ShooterPlayer;
     public GameObject RunnerPlayer;
     public GameObject DefenderPlayer;
+    public PlayingUI[] PlayingUIs;
 
     private int currentPlayer = 0;
 
@@ -12,7 +13,8 @@ public class CreatePlayer : MonoBehaviour {
 
     void Update()
     {
-        if (currentPlayer < 4)
+        if (GameStateManager.GetCurrentState().Equals(PlayingState.Instance) &&
+            currentPlayer < 4)
         {
             ListenGamepad();
         }
@@ -45,18 +47,27 @@ public class CreatePlayer : MonoBehaviour {
     private void CreaeteShooterPlayer(Gamepad pad)
     {
         GameObject shooter = Instantiate(ShooterPlayer);
-        shooter.GetComponent<ShooterPlayer>().gamepad = pad;
+        ShooterPlayer shooterPlayer = shooter.GetComponent<ShooterPlayer>();
+        shooterPlayer.gamepad = pad;
+        shooterPlayer.playingUI = PlayingUIs[currentPlayer];
+        shooterPlayer.playingUI.Starting();
     }
 
     private void CreateRunnerPlayer(Gamepad pad)
     {
         GameObject runner = Instantiate(RunnerPlayer);
-        runner.GetComponent<RunnerPlayer>().gamepad = pad;
+        RunnerPlayer runnerPlayer = runner.GetComponent<RunnerPlayer>();
+        runnerPlayer.gamepad = pad;
+        runnerPlayer.playingUI = PlayingUIs[currentPlayer];
+        runnerPlayer.playingUI.Starting();
     }
 
     private void CreateDefenderPlayer(Gamepad pad)
     {
         GameObject defender = Instantiate(DefenderPlayer);
-        defender.GetComponent<DefenderPlayer>().gamepad = pad;
+        DefenderPlayer defenderPlayer = defender.GetComponent<DefenderPlayer>();
+        defenderPlayer.gamepad = pad;
+        defenderPlayer.playingUI = PlayingUIs[currentPlayer];
+        defenderPlayer.playingUI.Starting();
     }
 }

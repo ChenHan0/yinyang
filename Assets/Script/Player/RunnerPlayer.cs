@@ -6,8 +6,6 @@ public class RunnerPlayer : Player {
     public float RotateSpeed = 3f;
     public float MoveSpeed = 3f;
 
-    public Text text;
-
     private Rigidbody rigibody;
 
     private int turns = 0;
@@ -52,7 +50,7 @@ public class RunnerPlayer : Player {
     {
         turns++;
 
-        text.text = turns.ToString();
+        //text.text = turns.ToString();
 
         ResetPoints();
         points[0] = true;
@@ -68,9 +66,10 @@ public class RunnerPlayer : Player {
 
         if (movement.magnitude > 0)
             transform.rotation = Quaternion.Slerp(transform.rotation,
-                Quaternion.LookRotation(-movement), RotateSpeed * Time.deltaTime);
+                Quaternion.LookRotation(movement), RotateSpeed * Time.deltaTime);
 
-        rigibody.MovePosition(transform.position - movement * MoveSpeed * Time.deltaTime);
+        //rigibody.MovePosition(transform.position - movement * MoveSpeed * Time.deltaTime);
+        rigibody.velocity = -movement * MoveSpeed;
     }
 
     void OnCollisionEnter(Collision other)

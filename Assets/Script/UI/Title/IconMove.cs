@@ -12,9 +12,12 @@ public class IconMove : MonoBehaviour {
     public GameObject Title;
     public GameObject Option;
     public GameObject CreatorList;
+    public GameObject TitleTotalUI;
+    public GameObject PlayingTotalUI;
 
     private RectTransform rect;
     public Gamepad pad;
+    [HideInInspector]
     public IconState iconState;
     private bool isMoved = false;
     private Vector2 pos;
@@ -42,6 +45,9 @@ public class IconMove : MonoBehaviour {
         {
             switch ((int)iconState) {
                 case 0:
+                    GameStateManager.SetCurrentState(PlayingState.Instance);
+                    PlayingTotalUI.SetActive(true);
+                    TitleTotalUI.SetActive(false);
                     break;
                 case 1:
                     CreatorList.SetActive(true);

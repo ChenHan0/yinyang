@@ -27,7 +27,7 @@ public class ScorePoint : MonoBehaviour {
                 if (!runner.points[i])
                     return;
 
-            runner.FinishRun();
+            //runner.FinishRun();
         }
     }
 }
