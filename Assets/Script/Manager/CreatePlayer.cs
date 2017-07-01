@@ -11,6 +11,8 @@ public class CreatePlayer : MonoBehaviour {
 
     private Gamepad pad;
 
+    public GameManager GM;
+
     void Update()
     {
         if (GameStateManager.GetCurrentState().Equals(PlayingState.Instance) &&
@@ -39,9 +41,21 @@ public class CreatePlayer : MonoBehaviour {
             {
                 pad.isUse = true;
                 CreateRunnerPlayer(pad);
+                GameStateManager.SetCurrentState(PlayingState.Instance);
             }
             currentPlayer++;
         }
+    }
+
+    public GameObject CreateRunner()
+    {
+        pad = GamepadManager.GetCurrentPad();
+        if (null != pad && !pad.isUse)
+        {
+            pad.isUse = true;
+            return CreateRunnerPlayer(pad);
+        }
+        return null;
     }
 
     private void CreaeteShooterPlayer(Gamepad pad)
@@ -53,13 +67,16 @@ public class CreatePlayer : MonoBehaviour {
         shooterPlayer.playingUI.Starting();
     }
 
-    private void CreateRunnerPlayer(Gamepad pad)
+    private GameObject CreateRunnerPlayer(Gamepad pad)
     {
         GameObject runner = Instantiate(RunnerPlayer);
         RunnerPlayer runnerPlayer = runner.GetComponent<RunnerPlayer>();
         runnerPlayer.gamepad = pad;
         runnerPlayer.playingUI = PlayingUIs[currentPlayer];
         runnerPlayer.playingUI.Starting();
+        GM.Runner = runner;
+
+        return runner;
     }
 
     private void CreateDefenderPlayer(Gamepad pad)
@@ -69,5 +86,7 @@ public class CreatePlayer : MonoBehaviour {
         defenderPlayer.gamepad = pad;
         defenderPlayer.playingUI = PlayingUIs[currentPlayer];
         defenderPlayer.playingUI.Starting();
+        GM.Defender = defender;
+        defenderPlayer.GM = GM;
     }
 }

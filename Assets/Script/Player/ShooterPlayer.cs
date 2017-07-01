@@ -25,6 +25,8 @@ public class ShooterPlayer : Player {
     public int RequiredCatchCount = 3;
     private int currentCatchCount = 0;
 
+    public float AutoShootTime = 3f;
+
     // Use this for initialization
     void Start () {
         rigibody = GetComponent<Rigidbody>();
@@ -106,17 +108,24 @@ public class ShooterPlayer : Player {
         {
             if (isHaveBall)
             {
-                anim.SetTrigger("Skill");
-                GameObject ball = Instantiate(BallPrefab, ShootPoint.position, Quaternion.identity) as GameObject;
-                ball.GetComponent<Rigidbody>().velocity = -transform.forward * ShootSpeed;
-                isHaveBall = !isHaveBall;
+                CancelInvoke();
+                AutoShoot();
             }
         }
+    }
+
+    void AutoShoot()
+    {
+        //anim.SetTrigger("Skill");
+        GameObject ball = Instantiate(BallPrefab, ShootPoint.position, Quaternion.identity) as GameObject;
+        ball.GetComponent<Rigidbody>().velocity = -transform.forward * ShootSpeed;
+        isHaveBall = !isHaveBall;
     }
 
     public override void CatchBall()
     {
         isHaveBall = true;
+        Invoke("AutoShoot", AutoShootTime);
         Debug.Log(isHaveBall);
     }
 

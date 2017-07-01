@@ -22,6 +22,10 @@ public class DefenderPlayer : Player
     
     public Gamepad gamepad;
 
+    public GameManager GM;
+
+    public float AutoShootTime = 3f;
+
     // Use this for initialization
     void Start () {
         rigibody = GetComponent<Rigidbody>();
@@ -70,18 +74,48 @@ public class DefenderPlayer : Player
     {
         if (gamepad.GetButtonADown())
         {
+            
+            {
+                CancelInvoke();
+                AutoShoot();
+            }
+        }
+    }
+
+    void PlusOne()
+    {
+        if (gamepad.GetButtonBDown())
+        {
             if (isHaveBall)
             {
-                GameObject ball = Instantiate(BallPrefab, ShootPoint.position, Quaternion.identity) as GameObject;
-                ball.GetComponent<Rigidbody>().velocity = -transform.forward * ShootSpeed;
+                GM.IsPlusOneSecond = true;
                 isHaveBall = !isHaveBall;
+                GM.CreateBall();
             }
+        }
+    }
+
+    void AutoShoot()
+    {
+        //anim.SetTrigger("Skill");
+        GameObject ball = Instantiate(BallPrefab, ShootPoint.position, Quaternion.identity) as GameObject;
+        ball.GetComponent<Rigidbody>().velocity = -transform.forward * ShootSpeed;
+        isHaveBall = !isHaveBall;
+    }
+
+    void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag == "Ball" && isColliderWork && 
+            GameStateManager.GetCurrentState().Equals(PlayingState.Instance))
+        {
+            GM.ChangePlayer();
         }
     }
 
     public override void CatchBall()
     {
         isHaveBall = true;
+        Invoke("AutoShoot", AutoShootTime);
         Debug.Log(isHaveBall);
     }
 

@@ -6,6 +6,8 @@ public class RunnerPlayer : Player {
     public float RotateSpeed = 3f;
     public float MoveSpeed = 3f;
 
+    public int WinTurnsCount = 20;
+
     private Rigidbody rigibody;
 
     private int turns = 0;
@@ -14,6 +16,8 @@ public class RunnerPlayer : Player {
 
     [HideInInspector]
     public bool[] points;
+
+    private bool isHit = true;
 
     // Use this for initialization
     void Start () {
@@ -42,8 +46,19 @@ public class RunnerPlayer : Player {
                 MoveAndRotate();
 
                 DisplayPoints();
+
+                GameOver();
             }                
         }       
+    }
+
+    public void GameOver()
+    {
+        if (turns >= WinTurnsCount)
+        {
+            GameOverState.Instance.IsShooterWin = false;
+            GameStateManager.SetCurrentState(GameOverState.Instance);
+        }
     }
 
     public void FinishRun()
@@ -72,11 +87,13 @@ public class RunnerPlayer : Player {
         rigibody.velocity = -movement * MoveSpeed;
     }
 
+    // Dead
     void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Ball")
+        if (other.gameObject.tag == "Ball" && isHit &&
+            GameStateManager.GetCurrentState().Equals(PlayingState.Instance))
         {
-            Debug.Log("The Runner is Dead");
+            Destroy(gameObject);
         }
     }
 
@@ -85,6 +102,20 @@ public class RunnerPlayer : Player {
         if (other.tag == "SocrePoint")
         {
             other.GetComponent<ScorePoint>().GetThisPoint(this);
+        }
+
+        if (other.tag == "SafePoint")
+        {
+            //GetComponent<BoxCollider>().isTrigger = true;
+            isHit = false;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "SafePoint")
+        {
+            isHit = true;
         }
     }
 

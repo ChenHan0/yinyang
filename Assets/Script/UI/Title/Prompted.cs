@@ -9,6 +9,8 @@ public class Prompted : MonoBehaviour {
     public float ChangeAlphaSpeed = 5f;
     private int temp = 0;
 
+    public bool IsColliderWork = true;
+
     private Gamepad pad;
     private Text text;
     private Color color;

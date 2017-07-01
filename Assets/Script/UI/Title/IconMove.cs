@@ -45,7 +45,7 @@ public class IconMove : MonoBehaviour {
         {
             switch ((int)iconState) {
                 case 0:
-                    GameStateManager.SetCurrentState(PlayingState.Instance);
+                    GameStateManager.SetCurrentState(ReadyState.Instance);
                     PlayingTotalUI.SetActive(true);
                     TitleTotalUI.SetActive(false);
                     break;

@@ -10,6 +10,7 @@ public class CatchBall : MonoBehaviour {
     {
         if (other.tag == "Ball")
         {
+            player.isColliderWork = false;
             if (other.GetComponent<Rigidbody>().velocity.magnitude >= BallVelocity)
             {
                 ShooterPlayer splayer = player.GetComponent<ShooterPlayer>();
@@ -21,7 +22,14 @@ public class CatchBall : MonoBehaviour {
 
             Destroy(other.gameObject);
             player.CatchBall();
+
+            Invoke("ColliderWork", 0.5f);
         }
     }
 
+
+    void ColliderWork()
+    {
+        player.isColliderWork = true;
+    }
 }
